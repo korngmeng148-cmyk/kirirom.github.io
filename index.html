@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ប្រព័ន្ធរក្សាទុកឈ្មោះ - Name Saver</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Koulen', 'Moul', 'Khmer OS', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        /* ផ្នែកខាងលើ */
+        .header {
+            background: linear-gradient(to right, #8b5a2b, #d4a76a);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .logo i {
+            font-size: 40px;
+            margin-right: 15px;
+            color: #ffd700;
+        }
+        
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .logo-subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+        
+        /* ផ្នែកទម្រង់ */
+        .form-section {
+            padding: 40px;
+        }
+        
+        .form-title {
+            color: #8b5a2b;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .form-title i {
+            margin-right: 10px;
+            color: #d4a76a;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            color: #8b5a2b;
+            font-weight: 600;
+            font-size: 18px;
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid #d4a76a;
+            border-radius: 12px;
+            font-size: 18px;
+            transition: all 0.3s;
+            background: #fcfaf7;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: #8b5a2b;
+            box-shadow: 0 0 0 3px rgba(139, 90, 43, 0.2);
+            transform: translateY(-2px);
+        }
+        
+        /* ប៊ូតុង */
+        .action-button {
+            background: linear-gradient(to right, #8b5a2b, #d4a76a);
+            color: white;
+            border: none;
+            padding: 18px 30px;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            letter-spacing: 1px;
+            margin-top: 10px;
+        }
+        
+        .action-button:hover {
+            background: linear-gradient(to right, #7a4a1f, #c4975a);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(139, 90, 43, 0.3);
+        }
+        
+        .action-button:active {
+            transform: translateY(0);
+        }
+        
+        .action-button i {
+            margin-right: 10px;
+        }
+        
+        /* ផ្នែកបង្ហាញឈ្មោះ */
+        .name-display-section {
+            padding: 0 40px 40px;
+            text-align: center;
+        }
+        
+        .name-display-title {
+            color: #8b5a2b;
+            font-size: 22px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .name-display-title i {
+            margin-right: 10px;
+            color: #d4a76a;
+        }
+        
+        .name-display-box {
+            background: linear-gradient(to right, #f9f5f0, #f0e6d6);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #d4a76a;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .name-display-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .name-display-box.animate::before {
+            left: 100%;
+        }
+        
+        .saved-name {
+            font-size: 36px;
+            font-weight: 700;
+            color: #8b5a2b;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.5s;
+        }
+        
+        .saved-name.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .empty-message {
+            font-size: 20px;
+            color: #aaa;
+            font-style: italic;
+        }
+        
+        /* ប៊ូតុងសកម្មភាព */
+        .button-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .secondary-button {
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .secondary-button:hover {
+            background: linear-gradient(to right, #5a0bb5, #1c65e0);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(37, 117, 252, 0.3);
+        }
+        
+        .danger-button {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .danger-button:hover {
+            background: linear-gradient(to right, #d62c1a, #a93226);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+        }
+        
+        /* របាយការណ៍ */
+        .history-section {
+            padding: 30px 40px;
+            background: #f9f5f0;
+            border-top: 2px solid #e8dfd3;
+        }
+        
+        .history-title {
+            color: #8b5a2b;
+            font-size: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .history-title i {
+            margin-right: 10px;
+            color: #d4a76a;
+        }
+        
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .history-list::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        .history-list::-webkit-scrollbar-track {
+            background: #f0e6d6;
+            border-radius: 10px;
+        }
+        
+        .history-list::-webkit-scrollbar-thumb {
+            background: #d4a76a;
+            border-radius: 10px;
+        }
+        
+        .history-item {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #d4a76a;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .history-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #8b5a2b;
+        }
+        
+        .history-time {
+            font-size: 14px;
+            color: #888;
+        }
+        
+        /* របាយការណ៍រហ័ស */
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e8dfd3;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 28px;
+            font-weight: 700;
+            color: #8b5a2b;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* របាយការណ៍បញ្ជាក់ */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #2ecc71;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+            display: flex;
+            align-items: center;
+            transform: translateX(150%);
+            transition: transform 0.5s;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification i {
+            margin-right: 10px;
+            font-size: 20px;
+        }
+        
+        /* ទំហំសម្រាប់ទូរស័ព្ទ */
+        @media (max-width: 768px) {
+            .form-section, .name-display-section, .history-section {
+                padding: 25px;
+            }
+            
+            .logo h1 {
+                font-size: 24px;
+            }
+            
+            .saved-name {
+                font-size: 28px;
+            }
+            
+            .button-group {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .form-section, .name-display-section, .history-section {
+                padding: 20px;
+            }
+            
+            .form-input {
+                padding: 15px;
+                font-size: 16px;
+            }
+            
+            .action-button {
+                padding: 15px;
+                font-size: 18px;
+            }
+            
+            .saved-name {
+                font-size: 24px;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Koulen&family=Moul&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- ផ្នែកខាងលើ -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-user-circle"></i>
+                <div>
+                    <h1>ប្រព័ន្ធរក្សាទុកឈ្មោះ</h1>
+                    <div class="logo-subtitle">Name Saver System</div>
+                </div>
+            </div>
+        </header>
+        
+        <!-- ផ្នែកទម្រង់ -->
+        <section class="form-section">
+            <h2 class="form-title">
+                <i class="fas fa-edit"></i>
+                បំពេញឈ្មោះរបស់អ្នក
+            </h2>
+            
+            <form id="nameForm">
+                <div class="form-group">
+                    <label class="form-label" for="firstName">
+                        <i class="fas fa-user"></i>
+                        នាមត្រកូល
+                    </label>
+                    <input type="text" id="firstName" class="form-input" placeholder="សូមបញ្ចូលនាមត្រកូល" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label" for="lastName">
+                        <i class="fas fa-user"></i>
+                        គោត្តនាម
+                    </label>
+                    <input type="text" id="lastName" class="form-input" placeholder="សូមបញ្ចូលគោត្តនាម" required>
+                </div>
+                
+                <button type="submit" class="action-button">
+                    <i class="fas fa-save"></i>
+                    រក្សាទុកឈ្មោះ
+                </button>
+            </form>
+        </section>
+        
+        <!-- ផ្នែកបង្ហាញឈ្មោះ -->
+        <section class="name-display-section">
+            <h2 class="name-display-title">
+                <i class="fas fa-star"></i>
+                ឈ្មោះដែលបានរក្សាទុក
+            </h2>
+            
+            <div class="name-display-box" id="nameDisplayBox">
+                <div class="saved-name" id="savedName">
+                    <!-- ឈ្មោះនឹងបង្ហាញនៅទីនេះ -->
+                </div>
+                <div class="empty-message" id="emptyMessage">
+                    <i class="fas fa-info-circle"></i>
+                    មិនទាន់មានឈ្មោះដែលបានរក្សាទុកទេ។ សូមបំពេញឈ្មោះខាងលើ!
+                </div>
+            </div>
+            
+            <div class="button-group">
+                <button class="secondary-button" id="copyButton">
+                    <i class="fas fa-copy"></i>
+                    ចម្លងឈ្មោះ
+                </button>
+                <button class="danger-button" id="clearButton">
+                    <i class="fas fa-trash"></i>
+                    លុបឈ្មោះ
+                </button>
+            </div>
+        </section>
+        
+        <!-- ផ្នែកប្រវត្តិឈ្មោះ -->
+        <section class="history-section">
+            <h2 class="history-title">
+                <i class="fas fa-history"></i>
+                ប្រវត្តិឈ្មោះដែលបានរក្សាទុក
+            </h2>
+            
+            <div class="history-list" id="historyList">
+                <!-- ប្រវត្តិឈ្មោះនឹងបង្ហាញនៅទីនេះ -->
+            </div>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="totalSaved">0</div>
+                    <div class="stat-label">ចំនួនសរុប</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="lastSaved">មិនទាន់មាន</div>
+                    <div class="stat-label">ចុងក្រោយ</div>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <!-- របាយការណ៍បញ្ជាក់ -->
+    <div class="notification" id="notification">
+        <i class="fas fa-check-circle"></i>
+        <span id="notificationMessage">ឈ្មោះត្រូវបានរក្សាទុកដោយជោគជ័យ!</span>
+    </div>
+
+    <script>
+        // កំណត់អថេរសម្រាប់រក្សាទុកទិន្នន័យ
+        let savedNames = JSON.parse(localStorage.getItem('savedNames')) || [];
+        let currentName = localStorage.getItem('currentName') || '';
+        
+        // ធ្វើបច្ចុប្បន្នភាពបង្ហាញនៅពេលទាញយកទំព័រ
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDisplay();
+            updateHistory();
+            updateStats();
+            
+            // បង្ហាញឈ្មោះបច្ចុប្បន្ន ប្រសិនបើមាន
+            if (currentName) {
+                showNameWithAnimation(currentName);
+            }
+        });
+        
+        // ព្រឹត្តិការណ៍ទម្រង់
+        document.getElementById('nameForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            
+            if (!firstName || !lastName) {
+                showNotification('សូមបំពេញនាមត្រកូល និងគោត្តនាម!', 'error');
+                return;
+            }
+            
+            // បង្កើតឈ្មោះពេញ
+            const fullName = `${firstName} ${lastName}`;
+            
+            // រក្សាទុកឈ្មោះបច្ចុប្តន្ន
+            currentName = fullName;
+            localStorage.setItem('currentName', currentName);
+            
+            // បន្ថែមទៅប្រវត្តិ
+            const nameRecord = {
+                name: fullName,
+                timestamp: new Date().toLocaleString('km-KH')
+            };
+            
+            savedNames.unshift(nameRecord);
+            
+            // រក្សាទុកក្នុង localStorage
+            localStorage.setItem('savedNames', JSON.stringify(savedNames));
+            
+            // បង្ហាញឈ្មោះជាមួយឥទ្ធិពល
+            showNameWithAnimation(fullName);
+            
+            // ធ្វើបច្ចុប្បន្នភាពប្រវត្តិ
+            updateHistory();
+            
+            // ធ្វើបច្ចុប្បន្នភាពស្ថិតិ
+            updateStats();
+            
+            // បង្ហាញរបាយការណ៍បញ្ជាក់
+            showNotification('ឈ្មោះត្រូវបានរក្សាទុកដោយជោគជ័យ!', 'success');
+            
+            // កំណត់ទម្រង់ឡើងវិញ
+            document.getElementById('nameForm').reset();
+        });
+        
+        // ព្រឹត្តិការណ៍ចម្លងឈ្មោះ
+        document.getElementById('copyButton').addEventListener('click', function() {
+            if (!currentName) {
+                showNotification('មិនមានឈ្មោះដើម្បីចម្លងទេ!', 'error');
+                return;
+            }
+            
+            // ចម្លងឈ្មោះទៅ clipboard
+            navigator.clipboard.writeText(currentName)
+                .then(() => {
+                    showNotification('ឈ្មោះត្រូវបានចម្លងទៅ clipboard!', 'success');
+                })
+                .catch(err => {
+                    showNotification('មិនអាចចម្លងឈ្មោះបានទេ!', 'error');
+                    console.error('កំហុសចម្លង: ', err);
+                });
+        });
+        
+        // ព្រឹត្តិការណ៍លុបឈ្មោះ
+        document.getElementById('clearButton').addEventListener('click', function() {
+            if (!currentName) {
+                showNotification('មិនមានឈ្មោះដើម្បីលុបទេ!', 'error');
+                return;
+            }
+            
+            // បញ្ជាក់មុនពេលលុប
+            if (confirm('តើអ្នកពិតជាចង់លុបឈ្មោះនេះមែនទេ?')) {
+                // លុបឈ្មោះបច្ចុប្បន្ន
+                currentName = '';
+                localStorage.removeItem('currentName');
+                
+                // ធ្វើបច្ចុប្បន្នភាពបង្ហាញ
+                updateDisplay();
+                
+                // បង្ហាញរបាយការណ៍បញ្ជាក់
+                showNotification('ឈ្មោះត្រូវបានលុបដោយជោគជ័យ!', 'success');
+            }
+        });
+        
+        // មុខងារបង្ហាញឈ្មោះជាមួយឥទ្ធិពល
+        function showNameWithAnimation(name) {
+            const nameDisplayBox = document.getElementById('nameDisplayBox');
+            const savedNameElement = document.getElementById('savedName');
+            const emptyMessage = document.getElementById('emptyMessage');
+            
+            // លាក់សារទទេ
+            emptyMessage.style.display = 'none';
+            
+            // បង្ហាញឈ្មោះ
+            savedNameElement.textContent = name;
+            savedNameElement.classList.remove('show');
+            
+            // បន្ថែមឥទ្ធិពលពន្លឺរអិល
+            nameDisplayBox.classList.add('animate');
+            setTimeout(() => {
+                nameDisplayBox.classList.remove('animate');
+            }, 600);
+            
+            // បង្ហាញឈ្មោះជាមួយឥទ្ធិពល fade in
+            setTimeout(() => {
+                savedNameElement.classList.add('show');
+            }, 300);
+            
+            // ធ្វើបច្ចុប្បន្នភាពបង្ហាញ
+            updateDisplay();
+        }
+        
+        // មុខងារធ្វើបច្ចុប្បន្នភាពបង្ហាញ
+        function updateDisplay() {
+            const savedNameElement = document.getElementById('savedName');
+            const emptyMessage = document.getElementById('emptyMessage');
+            
+            if (currentName) {
+                savedNameElement.textContent = currentName;
+                savedNameElement.classList.add('show');
+                emptyMessage.style.display = 'none';
+            } else {
+                savedNameElement.classList.remove('show');
+                emptyMessage.style.display = 'block';
+            }
+        }
+        
+        // មុខងារធ្វើបច្ចុប្បន្នភាពប្រវត្តិ
+        function updateHistory() {
+            const historyList = document.getElementById('historyList');
+            
+            // លុបប្រវត្តិចាស់
+            historyList.innerHTML = '';
+            
+            // បង្ហាញប្រវត្តិថ្មី
+            savedNames.slice(0, 5).forEach(record => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="history-name">${record.name}</div>
+                    <div class="history-time">${record.timestamp}</div>
+                `;
+                historyList.appendChild(historyItem);
+            });
+            
+            // បង្ហាញសារប្រសិនបើមិនមានប្រវត្តិ
+            if (savedNames.length === 0) {
+                historyList.innerHTML = `
+                    <div style="text-align: center; color: #888; padding: 20px; font-style: italic;">
+                        <i class="fas fa-history"></i>
+                        មិនទាន់មានប្រវត្តិឈ្មោះទេ។
+                    </div>
+                `;
+            }
+        }
+        
+        // មុខងារធ្វើបច្ចុប្បន្នភាពស្ថិតិ
+        function updateStats() {
+            document.getElementById('totalSaved').textContent = savedNames.length;
+            
+            if (savedNames.length > 0) {
+                document.getElementById('lastSaved').textContent = savedNames[0].timestamp.split(' ')[0];
+            } else {
+                document.getElementById('lastSaved').textContent = 'មិនទាន់មាន';
+            }
+        }
+        
+        // មុខងារបង្ហាញរបាយការណ៍បញ្ជាក់
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationMessage = document.getElementById('notificationMessage');
+            
+            // ប្ដូរពណ៌តាមប្រភេទ
+            if (type === 'success') {
+                notification.style.background = '#2ecc71';
+            } else if (type === 'error') {
+                notification.style.background = '#e74c3c';
+            } else if (type === 'info') {
+                notification.style.background = '#3498db';
+            }
+            
+            // ប្ដូរសារ
+            notificationMessage.textContent = message;
+            
+            // បង្ហាញរបាយការណ៍បញ្ជាក់
+            notification.classList.add('show');
+            
+            // លាក់របាយការណ៍បញ្ជាក់បន្ទាប់ពី 3 វិនាទី
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // បន្ថែមឥទ្ធិពលសម្រាប់ការបញ្ចូល
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-5px)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+    </script>
+</body>
+</html>
